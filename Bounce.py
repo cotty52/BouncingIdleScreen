@@ -3,12 +3,15 @@ import numpy as np
 
 # Screen size (updated from GUI)
 global x_Screen, y_Screen
+# Output video size (updated from GUI)
 
 # Image properties (updated from GUI)
 global imgSize, inputPath
+# Bouncing image properties (updated from GUI)
 
 # Video properties (updated from GUI)
 global fps, vidLength
+# Video properties, vidLength is in seconds(updated from GUI)
 
 # Starting position of image (updated from GUI)
 global x_Img, y_Img
@@ -22,6 +25,9 @@ global outputPath
 # Starting direction
 x_Direction = 1
 y_Direction = 1
+
+# Activate video generation
+activated = False
 
 
 # Define the animation function
@@ -60,26 +66,32 @@ def animate(t):
 
   return frame
 
+# Define the generate_video function
+def generate_video():
+  # Create the video clip (assuming output name is also set in the GUI)
+  fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+  video_clip = cv2.VideoWriter(outputPath, fourcc, fps, (x_Screen, y_Screen))
 
-# Create the video clip (assuming output name is also set in the GUI)
-fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-video_clip = cv2.VideoWriter(outputPath, fourcc, fps, (x_Screen, y_Screen))
+  frameTotal = vidLength * fps  # Claculates total number of frames
+  count = 0
+  mult = 1
+  # Write the video frames to file
+  for t in np.arange(0, vidLength, 1/fps):
+    frame = animate(t)
+    video_clip.write(frame)
+    percentComplete = t / vidLength
 
-frameTotal = vidLength * fps  # Claculates total number of frames
-count = 0
-mult = 1
-# Write the video frames to file
-for t in np.arange(0, vidLength, 1/fps):
-  frame = animate(t)
-  video_clip.write(frame)
-  percentComplete = t / vidLength
+    out = int(percentComplete * 100)
+    count += 1
+    if count == (frameTotal/100) * mult:
+      print(out, "%")
+    mult += 1
 
-  out = int(percentComplete * 100)
-  count += 1
-  if count == (frameTotal/100) * mult:
-    print(out, "%")
-  mult += 1
+  # Release resources
+  video_clip.release()
+  cv2.destroyAllWindows()
 
-# Release resources
-video_clip.release()
-cv2.destroyAllWindows()
+
+# Call the generate_video function if activated
+if (activated == True):
+  generate_video()
