@@ -1,17 +1,14 @@
 import cv2
 import numpy as np
 
-# Screen size (updated from GUI)
-global x_Screen, y_Screen
 # Output video size (updated from GUI)
+global x_Screen, y_Screen
 
-# Image properties (updated from GUI)
-global imgSize, inputPath
 # Bouncing image properties (updated from GUI)
+global imgSize, inputPath
 
-# Video properties (updated from GUI)
+# Video properties, vidLength is in seconds (updated from GUI)
 global fps, vidLength
-# Video properties, vidLength is in seconds(updated from GUI)
 
 # Starting position of image (updated from GUI)
 global x_Img, y_Img
@@ -22,13 +19,11 @@ global moveSpeed
 # Output path (updated from GUI)
 global outputPath
 
+percentComplete = 0
+
 # Starting direction
 x_Direction = 1
 y_Direction = 1
-
-# Activate video generation
-activated = False
-
 
 # Define the animation function
 def animate(t):
@@ -68,6 +63,8 @@ def animate(t):
 
 # Define the generate_video function
 def generate_video():
+  global percentComplete
+  
   # Create the video clip (assuming output name is also set in the GUI)
   fourcc = cv2.VideoWriter_fourcc(*'mp4v')
   video_clip = cv2.VideoWriter(outputPath, fourcc, fps, (x_Screen, y_Screen))
@@ -90,8 +87,3 @@ def generate_video():
   # Release resources
   video_clip.release()
   cv2.destroyAllWindows()
-
-
-# Call the generate_video function if activated
-if (activated == True):
-  generate_video()
