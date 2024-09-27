@@ -56,8 +56,23 @@ def animate(t):
   frame = np.zeros((y_Screen, x_Screen, 3), dtype=np.uint8)  # black background
   # frame = np.full((y_Screen, x_Screen, moveSpeed), 255, dtype=np.uint8)  # white background
 
-  # Copy the image onto the frame at the current position
-  frame[y_Img:y_Img+imgSize, x_Img:x_Img+imgSize] = image  # Assuming image is loaded elsewhere
+  
+  # Calculate the visible portion of the image to be drawn
+  x_start_frame = max(x_Img, 0)  # Make sure not to have negative indices
+  y_start_frame = max(y_Img, 0)
+
+  x_end_frame = min(x_Img + imgSize, x_Screen)
+  y_end_frame = min(y_Img + imgSize, y_Screen)
+
+  # Calculate the corresponding portion of the image
+  x_start_image = 0 if x_Img >= 0 else -x_Img  # Offset if the image is partially off-screen
+  y_start_image = 0 if y_Img >= 0 else -y_Img
+
+  x_end_image = x_start_image + (x_end_frame - x_start_frame)
+  y_end_image = y_start_image + (y_end_frame - y_start_frame)
+
+  # Copy the visible part of the image onto the frame
+  frame[y_start_frame:y_end_frame, x_start_frame:x_end_frame] = image[y_start_image:y_end_image, x_start_image:x_end_image]
 
   return frame
 
