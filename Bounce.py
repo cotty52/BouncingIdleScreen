@@ -103,8 +103,9 @@ def generate_video():
   
   percent_complete = 0
   progress["value"] = 0
-  done.grid_forget()
+  done.grid_remove()
   root.update_idletasks()
+  root.update()
   
   image = cv2.imread(img_path)
   if image is None:
