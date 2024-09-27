@@ -5,7 +5,7 @@ import numpy as np
 x_Screen, y_Screen = 1920, 1080
 
 # Bouncing image properties (updated from GUI)
-imgSize, inputPath = 50, "img.png"
+imgSize, input_path = 200, "img.png"
 
 # Video properties, vidLength is in seconds (updated from GUI)
 fps, vidLength = 30, 10
@@ -14,10 +14,10 @@ fps, vidLength = 30, 10
 x_Img, y_Img = 1,1
 
 # Movement properties (updated from GUI)
-moveSpeed = 1
+moveSpeed = 3
 
 # Output path (updated from GUI)
-outputPath = "bounce.mp4"
+output_path = "bounce.mp4"
 
 percentComplete = 0
 
@@ -53,21 +53,28 @@ def animate(t):
   y_Img += y_Direction * moveSpeed
 
   # Create a new blank frame
-  frame = np.zeros((y_Screen, x_Screen, moveSpeed), dtype=np.uint8)  # black background
+  frame = np.zeros((y_Screen, x_Screen, 3), dtype=np.uint8)  # black background
   # frame = np.full((y_Screen, x_Screen, moveSpeed), 255, dtype=np.uint8)  # white background
 
   # Copy the image onto the frame at the current position
-  frame[y_Img:y_Img+imgSize, x_Img:x_Img+imgSize] = cv2.imread(inputPath)  # Assuming image is loaded elsewhere
+  frame[y_Img:y_Img+imgSize, x_Img:x_Img+imgSize] = image  # Assuming image is loaded elsewhere
 
   return frame
 
 # Define the generate_video function
 def generate_video():
-  global percentComplete
+  global image
+  
+  percentComplete = 0
+  image = cv2.imread(input_path)
+  image = cv2.resize(image, (imgSize, imgSize))
+
+  # Ensure the frame has 3 channels (for RGB)
+  frame = np.zeros((y_Screen, x_Screen, 3), dtype=np.uint8)  # black background
   
   # Create the video clip (assuming output name is also set in the GUI)
   fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-  video_clip = cv2.VideoWriter(outputPath, fourcc, fps, (x_Screen, y_Screen))
+  video_clip = cv2.VideoWriter(output_path, fourcc, fps, (x_Screen, y_Screen))
 
   frameTotal = vidLength * fps  # Claculates total number of frames
   count = 0
@@ -83,6 +90,7 @@ def generate_video():
     if count == (frameTotal/100) * mult:
       print(out, "%")
     mult += 1
+
 
   # Release resources
   video_clip.release()
