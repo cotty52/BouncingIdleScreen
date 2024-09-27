@@ -5,6 +5,11 @@ import Bounce  # Import your Bounce script
 import os
 
 import sv_ttk
+import pywinstyles, sys
+
+
+
+
 
 current_dir = os.getcwd()  # This will get the current directory path
 
@@ -47,90 +52,115 @@ def run_code():
   # Call the animation function from Bounce.py
   Bounce.generate_video()
 
+
+def apply_theme_to_titlebar(window):
+    version = sys.getwindowsversion()
+
+    if version.major == 10 and version.build >= 22000:
+        # Set the title bar color to the background color on Windows 11 for better appearance
+        pywinstyles.change_header_color(window, "#1c1c1c" if sv_ttk.get_theme() == "dark" else "#fafafa")
+    elif version.major == 10:
+        pywinstyles.apply_style(window, "dark" if sv_ttk.get_theme() == "dark" else "normal")
+
+        # A hacky way to update the title bar's color on Windows 10 (it doesn't update instantly like on Windows 11)
+        window.wm_attributes("-alpha", 0.99)
+        window.wm_attributes("-alpha", 1)
+
+
+
 # Create the main window
 window = Tk()
 window.title("Bouncing Idle Screen")
 icon = PhotoImage(file="python_logo.png")
 window.iconphoto(True, icon)
-window.geometry("400x550")
+# window.geometry("450x600")
 # window.config(background="#abf1ff")
 
-Top_Frame = Frame(window)
-Top_Frame.grid(padx=10, pady=10)
+# Create the frames
+pad1 = 16
+pad2 = 8
+pad3 = 2
+width1 = 30
+width2 = 16
+width3 = 6
 
-# Image Path:
-# Label
-ttk.Label(Top_Frame, text="Image Path:").grid(row=0, column=0, columnspan=2)
-# Entry
-image_entry = ttk.Entry(Top_Frame, textvariable=current_dir).grid(row=0, column=0, columnspan=2)
-# Button
-ttk.Button(Top_Frame, text="Browse", command=get_image_path).grid(row=0, column=0, columnspan=2)
 
-# Image path label and entry
-# image_label = ttk.Label(window, text="Image Path:")
-# image_label.grid(row=0, column=0, columnspan=2)
-# input_path = ""
-# image_entry = ttk.Entry(window)
-# image_entry.grid(row=0, column=0, columnspan=2)
-# image_button = ttk.Button(window, text="Browse", command=get_image_path)
-# image_button.grid(row=0, column=0, columnspan=2)
+top_frame = Frame(window)
+top_frame.grid(row=0, column=0, padx=pad1, pady=pad1)
 
-# Screen size labels and entries
-screen_width_label = ttk.Label(window, text="Screen Width:")
-screen_width_label.grid(row=0, column=0)
-screen_width_entry = ttk.Entry(window)
-screen_width_entry.pack()
+screen_frame = Frame(window)
+screen_frame.grid(row=1, column=0, padx=pad1, pady=pad1)
 
-screen_height_label = ttk.Label(window, text="Screen Height:")
-screen_height_label.grid(row=0, column=2)
-screen_height_entry = ttk.Entry(window)
-screen_height_entry.pack()
+video_frame = Frame(window)
+video_frame.grid(row=2, column=0, padx=pad1, pady=pad1)
 
-# Image size label and entry
-image_size_label = ttk.Label(window, text="Image Size:")
-image_size_label.pack()
-image_size_entry = ttk.Entry(window)
-image_size_entry.pack()
+img_frame = Frame(window)
+img_frame.grid(row=3, column=0, padx=pad1, pady=pad1)
 
-# FPS label and entry
-fps_label = ttk.Label(window, text="FPS:")
-fps_label.pack()
-fps_entry = ttk.Entry(window)
-fps_entry.pack()
+output_frame = Frame(window)
+output_frame.grid(row=4, column=0, padx=pad1, pady=pad1)
 
-# Video length label and entry
-video_length_label = ttk.Label(window, text="Video Length (seconds):")
-video_length_label.pack()
-video_length_entry = ttk.Entry(window)
-video_length_entry.pack()
+# Image Path / Top Frame
+ttk.Label(top_frame, text="Image Path:").grid(row=0, column=0, padx=pad2, pady=pad3)
+image_entry = ttk.Entry(top_frame, width=width1)
+image_entry.insert(0, Bounce.inputPath)
+image_entry.grid(row=1, column=0, padx=pad2, pady=pad3)
+ttk.Button(top_frame, text="Browse", command=get_image_path).grid(row=2, column=0, padx=pad2, pady=pad3)
 
-# Starting position labels and entries
-starting_x_label = ttk.Label(window, text="Starting X Position:")
-starting_x_label.pack()
-starting_x_entry = ttk.Entry(window)
-starting_x_entry.pack()
+# Screen size / Screen Frame
+# Width
+ttk.Label(screen_frame, text="Screen Width:").grid(row=0, column=0, padx=pad2, pady=pad3)
+screen_width_entry = ttk.Entry(screen_frame, width=width2)
+screen_width_entry.insert(0, Bounce.x_Screen)
+screen_width_entry.grid(row=1, column=0, padx=pad2, pady=pad3)
+# Height
+ttk.Label(screen_frame, text="Screen Height:").grid(row=0, column=1, padx=pad2, pady=pad3)
+screen_height_entry = ttk.Entry(screen_frame, width=width2)
+screen_height_entry.insert(0, Bounce.y_Screen)
+screen_height_entry.grid(row=1, column=1, padx=pad2, pady=pad3)
 
-starting_y_label = ttk.Label(window, text="Starting Y Position:")
-starting_y_label.pack()
-starting_y_entry = ttk.Entry(window)
-starting_y_entry.pack()
+# Video length / Video Frame
+ttk.Label(video_frame, text="Video Length (seconds):").grid(row=0, column=0, padx=pad2, pady=pad3)
+video_length_entry = ttk.Entry(video_frame, width=width2)
+video_length_entry.insert(0, Bounce.vidLength)
+video_length_entry.grid(row=1, column=0, padx=pad2, pady=pad3)
 
-# Output name label and entry
-output_name_label = ttk.Label(window, text="Output Video Name:")
-output_name_label.pack()
-output_name_entry = ttk.Entry(window)
-output_name_entry.pack()
+# FPS / Video Frame
+ttk.Label(video_frame, text="FPS:").grid(row=0, column=1, padx=pad2, pady=pad3)
+fps_entry = ttk.Entry(video_frame, width=width2)
+fps_entry.insert(0, Bounce.fps)
+fps_entry.grid(row=1, column=1, padx=pad2, pady=pad3)
 
-# Generate video button
-generate_button = ttk.Button(window, text="Generate Video", command=run_code)
-generate_button.pack()
+# Image size / Image Frame
+ttk.Label(img_frame, text="Image Size:").grid(row=0, column=0, padx=pad2, pady=pad3, columnspan=2)
+image_size_entry = ttk.Entry(img_frame, width=width2)
+image_size_entry.insert(0, Bounce.imgSize)
+image_size_entry.grid(row=1, column=0, padx=pad2, pady=pad3, columnspan=2)
+
+# Starting position / Image Frame
+ttk.Label(img_frame, text="Starting Position (X,Y):").grid(row=0, column=2, padx=pad2, pady=pad3, columnspan=2)
+starting_x_entry = ttk.Entry(img_frame, width=width3)
+starting_x_entry.insert(0, Bounce.x_Img)
+starting_x_entry.grid(row=1, column=2, padx=pad2, pady=pad3, columnspan=1)
+starting_y_entry = ttk.Entry(img_frame, width=width3)
+starting_y_entry.insert(0, Bounce.y_Img)
+starting_y_entry.grid(row=1, column=3, padx=pad2, pady=pad3, columnspan=1)
+
+# Output name / Output Frame
+ttk.Label(output_frame, text="Output Video Name:").grid(row=0, column=0, padx=pad2, pady=pad3)
+output_name_entry = ttk.Entry(output_frame, width=width1)
+output_name_entry.insert(0, Bounce.outputPath)
+output_name_entry.grid(row=1, column=0, padx=pad2, pady=pad3)
+
+# Generate video button / Output Frame
+ttk.Button(output_frame, text="Generate Video", command=run_code).grid(row=2, column=0, padx=pad2, pady=pad3+16)
 
 if (Bounce.percentComplete > 0):
-  T = Text(window, height=2, width=10)
-  T.pack()
+  T = Text(output_frame, height=2, width=10).grid(row=3, column=0, padx=pad2, pady=pad3)
   T.insert(END, 'Percent Complete: ' + Bounce.percentComplete)
 
 sv_ttk.set_theme("dark")
+apply_theme_to_titlebar(window)
 
 # Run the main event loop
 window.mainloop()

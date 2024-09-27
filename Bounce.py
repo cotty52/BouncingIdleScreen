@@ -2,22 +2,22 @@ import cv2
 import numpy as np
 
 # Output video size (updated from GUI)
-global x_Screen, y_Screen
+x_Screen, y_Screen = 1920, 1080
 
 # Bouncing image properties (updated from GUI)
-global imgSize, inputPath
+imgSize, inputPath = 50, "img.png"
 
 # Video properties, vidLength is in seconds (updated from GUI)
-global fps, vidLength
+fps, vidLength = 30, 10
 
 # Starting position of image (updated from GUI)
-global x_Img, y_Img
+x_Img, y_Img = 1,1
 
 # Movement properties (updated from GUI)
-global moveSpeed
+moveSpeed = 1
 
 # Output path (updated from GUI)
-global outputPath
+outputPath = "bounce.mp4"
 
 percentComplete = 0
 
