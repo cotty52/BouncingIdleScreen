@@ -28,7 +28,7 @@ percent_complete = 0
 # Starting direction
 x_direction, y_direction = 1, 1
 
-bg_color = "white"
+bg_color = "black"
 
 # Create the main root
 root = Tk()
@@ -183,9 +183,33 @@ def run_code():
   starting_x = int(starting_x_entry.get())
   starting_y = int(starting_y_entry.get())
   move_speed = int(img_speed_entry.get())
-
-  # Call the animation function from py
+  
+  check_values()
   generate_video()
+
+
+def check_values():
+  global screen_width, screen_height, img_size, fps, video_length, starting_x, starting_y, move_speed
+  if screen_width <= 0 or screen_height <= 0 or img_size <= 0 or fps <= 0 or video_length <= 0 or starting_x <= 0 or starting_y <= 0 or move_speed <= 0:
+    raise ValueError("All values must be greater than 0.")
+  elif img_size > screen_width or img_size > screen_height:
+    raise ValueError("Image size must be less than screen size.")
+  elif starting_x > screen_width or starting_y > screen_height:
+    raise ValueError("Starting position must be less than screen size.")
+  elif move_speed > img_size:
+    raise ValueError("Move speed must be less than image size.")
+  elif fps > video_length:
+    raise ValueError("Frames per second must be less than video length.")
+  elif fps > 144:
+    fps = 144
+  elif screen_width > 7680:
+    screen_width = 7680
+  elif screen_height > 7680:
+    screen_height = 7680
+  
+  
+  
+  
 
 
 def apply_theme_to_titlebar(root):
@@ -288,15 +312,19 @@ output_name_entry = ttk.Entry(output_frame, width=width1)
 output_name_entry.insert(0, output_name)
 output_name_entry.grid(row=1, column=0, padx=pad2, pady=pad3)
 
+# Generate video button / Output Frame
+ttk.Button(output_frame, text="Generate Video", command=run_code).grid(row=2, column=0, padx=pad2, pady=pad3+12)
+
+# Progress bar / Output Frame
 progress = ttk.Progressbar(output_frame, orient = HORIZONTAL, length = 120, mode = "determinate")
 progress.grid(row = 3, column = 0, padx = pad2, pady = pad3)
 progress["value"] = 0
 root.update_idletasks()
 
+# Done label / Output Frame
 done = ttk.Label(output_frame, text="Done")
 
-# Generate video button / Output Frame
-ttk.Button(output_frame, text="Generate Video", command=run_code).grid(row=2, column=0, padx=pad2, pady=pad3+12)
+
 
 sv_ttk.set_theme("dark")
 apply_theme_to_titlebar(root)
