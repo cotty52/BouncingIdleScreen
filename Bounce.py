@@ -17,13 +17,15 @@ fps, video_length = 30, 10
 x_img, y_img = 1, 1
 
 # Movement properties
-move_speed = 5
+move_speed, real_speed = 5, 5
+
 
 # Output path
 output_path = "mp4"
 
 progress = 0
 percent_complete = 0
+file_size = 0
 
 # Starting direction
 x_direction, y_direction = 1, 1
@@ -43,11 +45,7 @@ output_name = "bounce"
 
 # Define the animation function
 def animate(t):
-  global x_img, y_img, x_direction, y_direction, bg_color, image, move_speed
-
-  real_speed = round(move_speed*60 / fps)
-  if real_speed == 0:
-    real_speed = 1
+  global x_img, y_img, x_direction, y_direction, bg_color, image, move_speed, real_speed
 
   # Change direction if image reaches edge of screen
   if x_img <= 0:
@@ -155,6 +153,7 @@ def get_image_path():
   image_entry.delete(0, END)
   image_entry.insert(0, img_path)
   
+  
 # Function to get the video path
 def set_video_path():
   global output_path, output_name
@@ -169,6 +168,7 @@ def set_video_path():
   
   if (output_path.endswith(".mp4") == False):
     output_path = output_path + ".mp4"
+
 
 # Get user inputs from GUI
 def run_code():
@@ -189,7 +189,10 @@ def run_code():
 
 
 def check_values():
-  global screen_width, screen_height, img_size, fps, video_length, starting_x, starting_y, move_speed
+  global screen_width, screen_height, img_size, fps, video_length, starting_x, starting_y, move_speed, real_speed
+  
+  real_speed = round(move_speed*24 / fps)
+  
   if screen_width <= 0 or screen_height <= 0 or img_size <= 0 or fps <= 0 or video_length <= 0 or starting_x <= 0 or starting_y <= 0 or move_speed <= 0:
     raise ValueError("All values must be greater than 0.")
   elif img_size > screen_width or img_size > screen_height:
@@ -198,19 +201,16 @@ def check_values():
     raise ValueError("Starting position must be less than screen size.")
   elif move_speed > img_size:
     raise ValueError("Move speed must be less than image size.")
-  elif fps > video_length:
-    raise ValueError("Frames per second must be less than video length.")
   elif fps > 144:
     fps = 144
   elif screen_width > 7680:
     screen_width = 7680
   elif screen_height > 7680:
     screen_height = 7680
+  elif real_speed == 0:
+    real_speed = 1
   
   
-  
-  
-
 
 def apply_theme_to_titlebar(root):
   version = sys.getwindowsversion()
