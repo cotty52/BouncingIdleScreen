@@ -35,8 +35,9 @@ bg_color = "black"
 # Create the main root
 root = Tk()
 root.title("Bouncing Idle Screen")
-icon = PhotoImage(file="python_logo.png")
-root.iconphoto(True, icon)
+if (os.path.exists("python_logo.png")):
+  icon = PhotoImage(file="python_logo.png")
+  root.iconphoto(True, icon)
 
 current_dir = os.getcwd()  # This will get the current directory path
 img_path = os.path.join(current_dir, img_path)
