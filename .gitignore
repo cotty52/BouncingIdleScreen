@@ -1,11 +1,7 @@
-
 notes.txt
-__pycache__/Bounce.cpython-312.pyc
 *.mp4
+!Idle_Bounce.mp4
 dist
-build
-.vscode
-__pycache__
 
 *.7z
 *.dmg
